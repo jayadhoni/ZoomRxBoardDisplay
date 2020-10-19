@@ -1,0 +1,37 @@
+body.board-container {
+    background-color: #f5f5f5;
+}
+.container-padding {
+    margin: 20px 0;
+}
+.board-list-item{
+    background: #ffffff;
+    padding: 10px;
+    margin-bottom: 10px;
+    box-shadow: 2px 2px 5px #888888;
+}
+.card-item h5 {
+    font-weight: bold;
+}
+.board-list-item .card-item {
+    border: 1px solid #cccccc;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+.board-list-item .card-item textarea, .board-list-item .card-item button, .board-list button {
+    border: 1px solid #cccccc;
+    margin-bottom: 10px;
+    background: #ffffff;
+}
+.board-list-item .card-item textarea {
+    padding: 5px;
+    width: 100%;
+    resize: none;
+}
+.board-list-item .card-item button, .board-list button, .board-list-item .card-item textarea {
+    border-radius: 5px;
+    padding: 10px;
+}
+.new-board-list-item, .card-containter p {
+    cursor: pointer;
+}
