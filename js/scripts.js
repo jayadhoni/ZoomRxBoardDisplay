@@ -68,11 +68,11 @@ var DataBinding = (function($) {
 
     var createElements = function() {
         for (i=0;i<sampleDataListLength;i++) {
-            boardFunction(sampleDataList[i]);
+            boardFunction(sampleDataList[i], i);
             for (j=0;j<sampleDataList[i].cardsList.length;j++) {
                 var cardContainer = ".board-list>.row>.col-md-3:nth-child(" + (i + 1) + ")";
                 var addCard = $(cardContainer + " .card-container p");
-                cardFunction(addCard);
+                cardFunction(addCard, i, j);
                 for (k=0;k<sampleDataList[i].cardsList[j].cardComments.length;k++) {
                     var commentContainer = $(cardContainer + " div .card-item:nth-child(" + (j + 1) + ")" + " button.comment");
                     commentFunction(commentContainer, sampleDataList[i].cardsList[j].cardComments[k]);
@@ -81,18 +81,25 @@ var DataBinding = (function($) {
         }
     }
 
-    var boardFunction = function(data) {
+    var boardFunction = function(data, i) {
         counter++;
         var content = data ? data.listName : "List " +  counter;
         $(".board-list .row .new-board-list-item").before(
-            "<div class=\"col-md-3 col-sm-4 board-list-items\"><div class=\"board-list-item\"><div class=\"row\"><div class=\"col-md-6\"><h3>" + 
+            "<div class=\"col-md-3 col-sm-4 board-list-items\" draggable=\"true\"><div class=\"board-list-item\"><div class=\"row\"><div class=\"col-md-6\"><h3>" + 
             content +
             "</h3></div><div class=\"col-md-6\"><button class=\"deleteList\">Delete this list</button></div></div><div class=\"card-container\"><p>Add new card...</p></div></div></div>"
         );
+        bindDragEvent(i);
     }
     
-    var cardFunction = function(element) {
-        $(element).parent().before("<div><div class=\"card-item\"><div class=\"row\"><div class=\"col-md-6\"><h5>Card title</h5></div><div class=\"col-md-6\"><button class=\"deleteCard\">Delete card</button></div></div><textarea row=\"2\"></textarea><textarea row=\"3\" class=\"comment\"></textarea><button class=\"comment\">Add Comment</button></div></div>");
+    var cardFunction = function(element, i, j) {
+        $(element).parent().before("<div class=\"card-items\"><div class=\"card-item\"><div class=\"row\"><div class=\"col-md-6\"><h5>Card title</h5></div><div class=\"col-md-6\"><button class=\"deleteCard\">Delete card</button></div></div><textarea row=\"2\"></textarea><textarea row=\"3\" class=\"comment\"></textarea><button class=\"comment\">Add Comment</button></div></div>");
+        if (i !== undefined && j !==undefined){
+            bindCardDragEvent(i, j);
+        } else {
+            bindCardDragEvent('', $(element).parent().parent().find(".card-items").length - 1, element.closest('.board-list-items'));
+        }
+        
     }
     
     var commentFunction = function (element, data) {
@@ -124,6 +131,7 @@ var DataBinding = (function($) {
         });
         $(document).on("click", "button.deleteList" , function($event) {
             $event.stopPropagation();
+            counter--;
             deleteFunction($event.target);
         });
         $(document).on("click", "button.deleteCard" , function($event) {
@@ -132,8 +140,46 @@ var DataBinding = (function($) {
         });
         $(document).on("click", ".new-board-list-item .col-md-3" , function($event) {
             $event.stopPropagation();
-            boardFunction();
+            boardFunction('', counter);
         });
+        
+    }
+
+    var bindDragEvent = function(data) {
+        $( ".board-list-items:nth-child(" + (data + 1) + ")" ).draggable({
+            start: function($event) {
+                console.log($event);
+            },
+            drag: function($event) {
+                console.log($event);
+            },
+            stop: function($event) {
+                console.log($event);
+            }
+        });
+    }
+
+    var bindCardDragEvent = function(i,j, listelement) {
+        var selector;
+        var cardelement = " .card-items:nth-child(" + (j + 2) + ")";
+        if (listelement) {
+            selector = $($(listelement).find(cardelement)[0]);
+        } else {
+            listelement = ".board-list-items:nth-child(" + (i + 1) + ")";
+            selector = $(listelement + cardelement)
+        }
+        selector.draggable({
+            containment: listelement ,
+            start: function($event) {
+                console.log($event);
+            },
+            drag: function($event) {
+                console.log($event);
+            },
+            stop: function($event) {
+                console.log($event);
+            }
+        })
     }
 
     var init = function () {
